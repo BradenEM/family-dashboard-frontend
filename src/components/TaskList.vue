@@ -13,8 +13,8 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue';
-import { getTaskList } from '../services/auth';
-import type { Tasks } from '../services/auth';
+import { getTaskList } from '../services/directus';
+import type { Tasks } from '../services/directus';
 
 export default defineComponent({
   name: 'TaskList',

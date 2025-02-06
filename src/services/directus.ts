@@ -31,7 +31,6 @@ const authenticatedClient = createDirectus(directus_url).with(authentication()).
 
 
 export const loginFunction = async (email: string, password: string): Promise<AuthResponse> => {
-  console.log(directus_url)
   try {
     const result = await loginClient.login(email, password);
 
@@ -42,7 +41,6 @@ export const loginFunction = async (email: string, password: string): Promise<Au
       localStorage.setItem('refresh_token', result.refresh_token);
     }
 
-    console.log(result)
     return result;
   } catch (error) {
     console.error('Login failed:', error);
@@ -60,7 +58,6 @@ export const logoutFunction = async (): Promise<void> => {
     localStorage.removeItem('refresh_token');
 
 
-    console.log(result)
     return result;
   } catch (error) {
     console.error('Logout failed:', error);
@@ -82,7 +79,6 @@ export const getCurrentUser = async (): Promise<User> => {
 export const getTaskList = async (assignee: string): Promise<Tasks[]> => {
   try {
     const result = await authenticatedClient.request(readItems('Tasks', { filter: { Assignee: { _eq: assignee } } })) as Tasks[];
-    console.log(result)
     return result;
   } catch (error) {
     console.error('Get current user failed:', error);

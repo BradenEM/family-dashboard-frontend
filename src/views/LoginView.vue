@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { loginFunction } from '@/services/auth.js';
+import { loginFunction } from '@/services/directus.js';
 
 
 export default {
