@@ -1,20 +1,33 @@
 <template>
   <div>
-    <h2>Login</h2>
     <form @submit.prevent="handleLogin">
-      <input v-model="email" type="email" placeholder="Email" required />
-      <input v-model="password" type="password" placeholder="Password" required />
-      <button type="submit">Login</button>
+      <InputGroup>
+        <InputGroupAddon>
+          <i class="pi pi-user"></i>
+        </InputGroupAddon>
+        <InputText v-model="email" type="email" placeholder="Email" required />
+      </InputGroup>
+      <InputGroup>
+        <InputText v-model="password" type="password" placeholder="Password" required />
+        <PrimeButton type="submit">Login</PrimeButton>
+      </InputGroup>
     </form>
     <p v-if="errorMessage">{{ errorMessage }}</p>
+
   </div>
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue';
 import { loginFunction } from '@/services/directus.js';
+import InputGroup from 'primevue/inputgroup';
+import InputGroupAddon from 'primevue/inputgroupaddon';
+import PrimeButton from 'primevue/button';
+import InputText from 'primevue/inputtext';
 
-
-export default {
+export default defineComponent({
+  name: 'LoginView',
+  components: { InputGroup, InputGroupAddon, PrimeButton, InputText },
   data() {
     return {
       email: '',
@@ -33,5 +46,5 @@ export default {
       }
     },
   },
-};
+});
 </script>
