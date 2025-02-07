@@ -1,16 +1,19 @@
 <template>
   <div>
     <form @submit.prevent="handleLogin">
-      <InputGroup>
+      <InputGroup class="pb-5">
         <InputGroupAddon>
           <i class="pi pi-user"></i>
         </InputGroupAddon>
         <InputText v-model="email" type="email" placeholder="Email" required />
       </InputGroup>
       <InputGroup>
+        <InputGroupAddon>
+          <i class="pi pi-lock"></i>
+        </InputGroupAddon>
         <InputText v-model="password" type="password" placeholder="Password" required />
-        <PrimeButton type="submit">Login</PrimeButton>
       </InputGroup>
+      <PrimeButton type="submit">Login</PrimeButton>
     </form>
     <p v-if="errorMessage">{{ errorMessage }}</p>
 
