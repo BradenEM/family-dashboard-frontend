@@ -1,4 +1,5 @@
 import { createDirectus, authentication, rest, readMe, readItems } from '@directus/sdk';
+import type { UUID } from 'crypto';
 
 
 const directus_url = import.meta.env.VITE_DIRECTUS_URL;
@@ -16,6 +17,13 @@ export interface User {
   last_name: string;
   email: string;
 }
+
+export interface UserList {
+  id: string;
+  Name: string;
+  Image: UUID;
+}
+
 
 export interface Tasks {
   id: string;
@@ -81,7 +89,17 @@ export const getTaskList = async (assignee: string): Promise<Tasks[]> => {
     const result = await authenticatedClient.request(readItems('Tasks', { filter: { Assignee: { _eq: assignee } } })) as Tasks[];
     return result;
   } catch (error) {
-    console.error('Get current user failed:', error);
+    console.error('Get task list failed:', error);
+    throw error;
+  }
+}
+
+export const getUserList = async (): Promise<UserList[]> => {
+  try {
+    const result = await authenticatedClient.request(readItems('User')) as UserList[];
+    return result;
+  } catch (error) {
+    console.error('Get user list failed:', error);
     throw error;
   }
 }
