@@ -1,4 +1,4 @@
-import { createDirectus, authentication, rest, readMe, readItems } from '@directus/sdk';
+import { createDirectus, authentication, rest, readMe, readItems, readItem } from '@directus/sdk';
 import type { UUID } from 'crypto';
 
 
@@ -19,6 +19,12 @@ export interface User {
 }
 
 export interface UserList {
+  id: string;
+  Name: string;
+  Image: UUID;
+}
+
+export interface SingleUser {
   id: string;
   Name: string;
   Image: UUID;
@@ -105,3 +111,12 @@ export const getUserList = async (): Promise<UserList[]> => {
 }
 
 
+export const getUser = async (id: string | number): Promise<SingleUser> => {
+  try {
+    const result = await authenticatedClient.request(readItem('User', id)) as SingleUser;
+    return result;
+  } catch (error) {
+    console.error('Get user list failed:', error);
+    throw error;
+  }
+}
