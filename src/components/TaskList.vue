@@ -3,7 +3,7 @@
     <div v-if="loading">Loading tasks...</div>
     <div v-else-if="error">{{ error }}</div>
     <ul v-else>
-      <img v-if="user" :src="url + user.Image" />
+      <img class="profile" v-if="user" :src="url + user.Image" />
       <li v-for="task in tasks" :key="task.id">
         <strong>{{ task.Title }}</strong> - {{ task.status }}
       </li>
