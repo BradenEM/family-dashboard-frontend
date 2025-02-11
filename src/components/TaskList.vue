@@ -1,49 +1,66 @@
 <template>
   <div>
-    <h2>Task List</h2>
     <div v-if="loading">Loading tasks...</div>
     <div v-else-if="error">{{ error }}</div>
     <ul v-else>
-      <li v-for="task in task" :key="task.id">
+      <img v-if="user" :src="url + user.Image" />
+      <li v-for="task in tasks" :key="task.id">
         <strong>{{ task.Title }}</strong> - {{ task.status }}
       </li>
     </ul>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue';
-import { getTaskList } from '../services/directus';
-import type { Tasks } from '../services/directus';
+<script setup lang="ts">
+import { ref, onMounted, watchEffect } from 'vue';
+import { getTaskList, getUser } from '../services/directus';
+import type { SingleUser, Tasks } from '../services/directus';
 
-export default defineComponent({
-  name: 'TaskList',
-  props: {
-    assignee: {
-      type: String,
-      required: true,
-    },
+const url = import.meta.env.VITE_DIRECTUS_URL + '/assets/';
 
-  },
-  setup(props) {
-    const task = ref<Tasks[]>([]);
-    const loading = ref(true);
-    const error = ref<string | null>(null);
 
-    const loadTasks = async () => {
-      try {
-        task.value = await getTaskList(props.assignee);
-      } catch (err) {
-        error.value = 'Failed to load tasks';
-        console.error(err);
-      } finally {
-        loading.value = false;
-      }
-    };
+const props = defineProps<{
+  assignee: string;
+}>();
+const tasks = ref<Tasks[]>([]);
+const loading = ref(true);
+const error = ref<string | null>(null);
+const user = ref<SingleUser>();
 
-    onMounted(loadTasks);
 
-    return { task, loading, error };
-  },
+
+const loadTasks = async () => {
+  try {
+    tasks.value = await getTaskList(props.assignee);
+    console.log(tasks)
+  } catch (err) {
+    error.value = 'Failed to load tasks';
+    console.error(err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const loadUser = async () => {
+  try {
+    user.value = await getUser(props.assignee);
+    console.log(user)
+  } catch (error) {
+    console.error("Failed to load user: ", error);
+  }
+}
+
+
+
+onMounted(loadTasks);
+onMounted(loadUser);
+
+watchEffect(async () => {
+  if (props.assignee) {
+    loading.value = true;
+    await loadUser();
+    await loadTasks();
+  }
 });
+
 </script>
