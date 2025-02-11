@@ -1,4 +1,4 @@
-import { createDirectus, authentication, rest, readMe, readItems, readItem } from '@directus/sdk';
+import { createDirectus, authentication, rest, readMe, readItems, readItem, createItem } from '@directus/sdk';
 import type { UUID } from 'crypto';
 
 
@@ -30,7 +30,7 @@ export interface SingleUser {
   Image: UUID;
 }
 
-
+// Need to really look at the types that are declared here. Not sure I'm doing it right but it works atm :)
 export interface Tasks {
   id: string;
   status: string;
@@ -117,6 +117,16 @@ export const getUser = async (id: string | number): Promise<SingleUser> => {
     return result;
   } catch (error) {
     console.error('Get user list failed:', error);
+    throw error;
+  }
+}
+
+export const addTask = async (title: string, assignee: number): Promise<Tasks> => {
+  try {
+    const result = await authenticatedClient.request(createItem('Tasks', {Title: title, Assignee: assignee})) as Tasks;
+    return result;
+  } catch (error) {
+    console.error('Add task failed:', error);
     throw error;
   }
 }
