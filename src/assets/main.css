@@ -35,3 +35,9 @@ a,
     padding: 0 2rem;
   }
 }
+
+.profile {
+  border-radius: 50%;
+  width: 300px;
+
+}
