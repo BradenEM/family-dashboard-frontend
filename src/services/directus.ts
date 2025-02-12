@@ -29,8 +29,9 @@ export interface SingleUser {
   Name: string;
   Image: UUID;
 }
-
-// Need to really look at the types that are declared here. Not sure I'm doing it right but it works atm :)
+// TODO: look into editing state in the declaration above.
+// TODO: Need to really look at the types that are declared here. Not sure I'm doing it right but it works atm :)
+// TODO: fix your collections in Directus
 export interface Tasks {
   id: string;
   status: string;
@@ -123,7 +124,7 @@ export const getUser = async (id: string | number): Promise<SingleUser> => {
 
 export const addTask = async (title: string, assignee: number): Promise<Tasks> => {
   try {
-    const result = await authenticatedClient.request(createItem('Tasks', {Title: title, Assignee: assignee})) as Tasks;
+    const result = await authenticatedClient.request(createItem('Tasks', { Title: title, Assignee: assignee })) as Tasks;
     return result;
   } catch (error) {
     console.error('Add task failed:', error);
