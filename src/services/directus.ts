@@ -1,10 +1,7 @@
-import { createDirectus, authentication, rest, readMe, readItems, readItem, createItem } from '@directus/sdk';
+import { createDirectus, authentication, rest, readMe, readItems,  createItem, readUsers, readUser } from '@directus/sdk';
 import type { UUID } from 'crypto';
 
-
 const directus_url = import.meta.env.VITE_DIRECTUS_URL;
-
-
 
 export interface AuthResponse {
   access_token: string | null;
@@ -16,26 +13,19 @@ export interface User {
   first_name: string;
   last_name: string;
   email: string;
+  avatar: UUID;
+  editable: boolean;
+  isManager: boolean;
 }
 
-export interface UserList {
-  id: string;
-  Name: string;
-  Image: UUID;
-}
 
-export interface SingleUser {
-  id: string;
-  Name: string;
-  Image: UUID;
-}
 // TODO: look into editing state in the declaration above.
 // TODO: Need to really look at the types that are declared here. Not sure I'm doing it right but it works atm :)
 // TODO: fix your collections in Directus
-export interface Tasks {
+export interface Task {
   id: string;
   status: string;
-  Assignee: number;
+  Assignee: UUID;
   Title: string;
 }
 
@@ -91,9 +81,9 @@ export const getCurrentUser = async (): Promise<User> => {
   }
 }
 
-export const getTaskList = async (assignee: string): Promise<Tasks[]> => {
+export const getTaskList = async (assignee: string): Promise<Task[]> => {
   try {
-    const result = await authenticatedClient.request(readItems('Tasks', { filter: { Assignee: { _eq: assignee } } })) as Tasks[];
+    const result = await authenticatedClient.request(readItems('tasks', { filter: { Assignee: { _eq: assignee } } })) as Task[];
     return result;
   } catch (error) {
     console.error('Get task list failed:', error);
@@ -101,9 +91,9 @@ export const getTaskList = async (assignee: string): Promise<Tasks[]> => {
   }
 }
 
-export const getUserList = async (): Promise<UserList[]> => {
+export const getUserList = async (): Promise<User[]> => {
   try {
-    const result = await authenticatedClient.request(readItems('User')) as UserList[];
+    const result = await authenticatedClient.request(readUsers({fields: ['*']})) as User[];
     return result;
   } catch (error) {
     console.error('Get user list failed:', error);
@@ -111,20 +101,21 @@ export const getUserList = async (): Promise<UserList[]> => {
   }
 }
 
-
-export const getUser = async (id: string | number): Promise<SingleUser> => {
+export const getUser = async (userId: string): Promise<User> => {
   try {
-    const result = await authenticatedClient.request(readItem('User', id)) as SingleUser;
+    const result = await authenticatedClient.request(readUser(userId, { fields: ['*'] })) as User;
     return result;
   } catch (error) {
-    console.error('Get user list failed:', error);
+    console.error('Get user failed:', error);
     throw error;
   }
 }
 
-export const addTask = async (title: string, assignee: number): Promise<Tasks> => {
+
+
+export const addTask = async (title: string, assignee: number): Promise<Task> => {
   try {
-    const result = await authenticatedClient.request(createItem('Tasks', { Title: title, Assignee: assignee })) as Tasks;
+    const result = await authenticatedClient.request(createItem('Tasks', { Title: title, Assignee: assignee })) as Task;
     return result;
   } catch (error) {
     console.error('Add task failed:', error);

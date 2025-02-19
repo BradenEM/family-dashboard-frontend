@@ -2,8 +2,8 @@
   <div>
     <div class="flex flex-row">
       <div class="w-100">
-        <PrimeSelect v-model="selectedUser1" :options="users" optionLabel="Name" optionValue="id" />
-        <TaskList :assignee="String(selectedUser1)" v-if="selectedUser1" />
+        <PrimeSelect v-model="selectedUser1" :options="users" optionLabel="first_name" optionValue="id" />
+        <TaskList :assignee="selectedUser1" v-if="selectedUser1" />
         <div v-if="!editMode1">
           <PrimeButton v-if="selectedUser1" type="button" @click="editToggle1">+</PrimeButton>
         </div>
@@ -14,8 +14,8 @@
         </div>
       </div>
       <div class="w-100">
-        <PrimeSelect v-model="selectedUser2" :options="users" optionLabel="Name" optionValue="id" />
-        <TaskList :assignee="String(selectedUser2)" v-if="selectedUser2" />
+        <PrimeSelect v-model="selectedUser2" :options="users" optionLabel="first_name" optionValue="id" />
+        <TaskList :assignee="selectedUser2" v-if="selectedUser2" />
         <div v-if="!editMode2">
           <PrimeButton v-if="selectedUser2" type="button" @click="editToggle2">+</PrimeButton>
         </div>
@@ -33,11 +33,11 @@
 import { ref, onMounted } from 'vue';
 import TaskList from '@/components/TaskList.vue';
 import { getUserList, addTask } from '@/services/directus';
-import type { UserList } from '@/services/directus';
+import type { User } from '@/services/directus';
 import PrimeSelect from 'primevue/select';
 import PrimeButton from 'primevue/button';
 
-const users = ref<UserList[]>([]);
+const users = ref<User[]>([]);
 const error = ref<string | null>(null);
 const selectedUser1 = ref<string | null>(null);
 const selectedUser2 = ref<string | null>(null);
@@ -48,6 +48,7 @@ const newTaskTitle = ref<string>('');
 const loadUsers = async () => {
   try {
     users.value = await getUserList();
+    console.log(users.value)
   } catch (err) {
     error.value = 'Failed to load users';
     console.error(err);
