@@ -83,7 +83,7 @@ export const getCurrentUser = async (): Promise<User> => {
 
 export const getTaskList = async (assignee: string): Promise<Task[]> => {
   try {
-    const result = await authenticatedClient.request(readItems('tasks', { filter: { Assignee: { _eq: assignee } } })) as Task[];
+    const result = await authenticatedClient.request(readItems('tasks', { filter: { assignee: { _eq: assignee } } })) as Task[];
     return result;
   } catch (error) {
     console.error('Get task list failed:', error);
