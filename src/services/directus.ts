@@ -25,14 +25,17 @@ export interface User {
 export interface Task {
   id: string;
   status: string;
-  Assignee: UUID;
-  Title: string;
+  assignee: UUID;
+  title: string;
 }
 
 
 
-const loginClient = createDirectus(directus_url).with(authentication('json')).with(rest()); // Replace with your Directus instance URL
-const authenticatedClient = createDirectus(directus_url).with(authentication()).with(rest()); // Replace with your Directus instance URL
+const loginClient = createDirectus(directus_url).with(authentication('json')).with(rest());
+
+const authenticatedClient = createDirectus(directus_url).with(authentication()).with(rest());
+
+const stupidClient = createDirectus(directus_url).with(rest());
 
 
 export const loginFunction = async (email: string, password: string): Promise<AuthResponse> => {
@@ -45,7 +48,6 @@ export const loginFunction = async (email: string, password: string): Promise<Au
     if (result.refresh_token) {
       localStorage.setItem('refresh_token', result.refresh_token);
     }
-
     return result;
   } catch (error) {
     console.error('Login failed:', error);
@@ -72,7 +74,7 @@ export const logoutFunction = async (): Promise<void> => {
 
 export const getCurrentUser = async (): Promise<User> => {
   try {
-    const result = await authenticatedClient.request(readMe({ fields: ['*'] })) as User;
+    const result = await stupidClient.request(readMe({fields: ['*']})) as User;
 
     return result;
   } catch (error) {
@@ -113,9 +115,9 @@ export const getUser = async (userId: string): Promise<User> => {
 
 
 
-export const addTask = async (title: string, assignee: number): Promise<Task> => {
+export const addTask = async (title: string, assignee: string): Promise<Task> => {
   try {
-    const result = await authenticatedClient.request(createItem('Tasks', { Title: title, Assignee: assignee })) as Task;
+    const result = await authenticatedClient.request(createItem('tasks', { title: title, assignee: assignee })) as Task;
     return result;
   } catch (error) {
     console.error('Add task failed:', error);

@@ -5,7 +5,7 @@
     <ul v-else>
       <img class="profile" v-if="user" :src="url + user.avatar" />
       <li v-for="task in tasks" :key="task.id">
-        <strong>{{ task.Title }}</strong> - {{ task.status }}
+        <strong>{{ task.title }}</strong> - {{ task.status }}
       </li>
     </ul>
   </div>

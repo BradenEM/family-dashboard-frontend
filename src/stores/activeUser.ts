@@ -1,17 +1,16 @@
 import {defineStore} from 'pinia'
-import type {User} from '@/services/directus'
 
 export const useActiveUserStore = defineStore({
   id: 'activeUser',
   state: () => ({
-    user: null as User | null
+    id : '',
+    first_name: '',
+    last_name: '',
+    email: '',
+    avatar: '',
+    editable: false,
+    isManager: false
   }),
-  actions: {
-    setUser(user: User) {
-      this.user = user
-    },
-    clearUser() {
-      this.user = null
-    }
-  }
+
+
 })

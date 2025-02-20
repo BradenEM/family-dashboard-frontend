@@ -9,7 +9,7 @@
         </div>
         <div v-else>
           <input type="text" v-model="newTaskTitle" />
-          <PrimeButton v-if="selectedUser1" type="button" @click="newTask(newTaskTitle, Number(selectedUser1))">Submit
+          <PrimeButton v-if="selectedUser1" type="button" @click="newTask(newTaskTitle, selectedUser1)">Submit
           </PrimeButton>
         </div>
       </div>
@@ -21,7 +21,7 @@
         </div>
         <div v-else>
           <input type="text" v-model="newTaskTitle" />
-          <PrimeButton v-if="selectedUser2" type="button" @click="newTask(newTaskTitle, Number(selectedUser2))">Submit
+          <PrimeButton v-if="selectedUser2" type="button" @click="newTask(newTaskTitle, selectedUser2)">Submit
           </PrimeButton>
         </div>
       </div>
@@ -32,10 +32,11 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import TaskList from '@/components/TaskList.vue';
-import { getUserList, addTask } from '@/services/directus';
+import { getUserList, addTask, getCurrentUser } from '@/services/directus';
 import type { User } from '@/services/directus';
 import PrimeSelect from 'primevue/select';
 import PrimeButton from 'primevue/button';
+import { useActiveUserStore } from '@/stores/activeUser';
 
 const users = ref<User[]>([]);
 const error = ref<string | null>(null);
@@ -55,7 +56,16 @@ const loadUsers = async () => {
   }
 };
 
-const newTask = async (title: string, selectedUser: number) => {
+const loadActiveUser = async () => {
+  try {
+    useActiveUserStore().$patch(await getCurrentUser());
+  } catch (err) {
+    error.value = 'Failed to load user';
+    console.error(err);
+  }
+};
+
+const newTask = async (title: string, selectedUser: string) => {
   try {
     await addTask(title, selectedUser);
     editToggle1();
@@ -72,7 +82,10 @@ const editToggle1 = () => {
 const editToggle2 = () => {
   editMode2.value = !editMode2.value;
 };
-onMounted(loadUsers);
+onMounted(async () => {
+  await loadUsers();
+  await loadActiveUser();
+});
 
 
 
